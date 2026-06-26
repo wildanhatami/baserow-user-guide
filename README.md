@@ -1,73 +1,117 @@
-# Aplikasi Baserow
-
-<h1 align="center"><img src="https://avatars.githubusercontent.com/u/1261496?v=4"></h1>
+# 📊 Baserow User Guide
 
 <div align="center">
-  
-[Sekilas Tentang](#sekilas-tentang) | [Instalasi](#instalasi) | [Cara Pemakaian](#cara-pemakaian) | [Pembahasan](#pembahasan) | [Referensi](#referensi)
-:---:|:---:|:---:|:---:|:---:
+  <img src="https://avatars.githubusercontent.com/u/72491795?v=4" width="120" alt="Baserow Logo" />
 
+  <h3>Panduan Lengkap Penggunaan Baserow</h3>
+  <p>Open-source no-code database platform — alternatif Airtable yang bisa di-self-hosted</p>
+
+  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+  [![Baserow](https://img.shields.io/badge/Baserow-Open%20Source-orange)](https://baserow.io/)
+  [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 </div>
 
-# Sekilas Tentang
-[`^ kembali ke atas ^`](#)
+---
 
-Baserow adalah platform open source no-code database yang memungkinkan pengguna membuat, mengelola, dan berbagi data layaknya Airtable. Ia bisa di-self-hosted, berbasis PostgreSQL, serta menyediakan API untuk integrasi dengan aplikasi lain.
+## 📋 Daftar Isi
 
-# Instalasi
-[`^ kembali ke atas ^`](#)
+- [Sekilas Tentang](#-sekilas-tentang)
+- [Instalasi](#-instalasi)
+- [Konfigurasi](#-konfigurasi)
+- [Otomatisasi](#-otomatisasi)
+- [Cara Pemakaian](#-cara-pemakaian)
+- [Pembahasan](#-pembahasan)
+- [Referensi](#-referensi)
 
-### Kebutuhan Sistem :
-- Unix/Linux, macOS, atau Windows.
-- Docker & Docker Compose: Versi terbaru.
-- RAM: Minimal 2 GB.
-- Penyimpanan: Tergantung jumlah data, disarankan minimal 10 GB kosong.
+---
 
-### Proses Instalasi
-#### 1. ssh ke Virtual Machine
-- Download key untuk vm (nama: kdjk_key_1.pem) dan save di local.
-```
-$ ssh -i /path/to/kdjk_key_1.pem kelompoksatukdjk@my.public.ip
-```
-- Masukkan password dari user kelompoksatukdjk
+## 🔍 Sekilas Tentang
 
-#### 2. install docker, docker-compose dan git
+**Baserow** adalah platform open-source **no-code database** yang memungkinkan pengguna membuat, mengelola, dan berbagi data layaknya Airtable.
+
+- ✅ Self-hosted — data sepenuhnya di bawah kontrol Anda
+- ✅ Berbasis **PostgreSQL**
+- ✅ Menyediakan **REST API** untuk integrasi dengan aplikasi lain
+- ✅ Antarmuka seperti spreadsheet, mudah digunakan tanpa koding
+
+---
+
+## 🛠️ Instalasi
+
+### Kebutuhan Sistem
+
+| Komponen | Kebutuhan |
+|---|---|
+| OS | Unix/Linux, macOS, atau Windows |
+| Docker & Docker Compose | Versi terbaru |
+| RAM | Minimal 2 GB |
+| Penyimpanan | Minimal 10 GB kosong |
+
+### Langkah Instalasi
+
+#### 1. SSH ke Virtual Machine
+
+Download key untuk VM (`kdjk_key_1.pem`) dan simpan di lokal:
+
+```bash
+ssh -i /path/to/kdjk_key_1.pem kelompoksatukdjk@my.public.ip
 ```
-$ sudo apt update -y
-$ sudo apt install docker docker-compose git -y
+
+Masukkan password dari user `kelompoksatukdjk`.
+
+#### 2. Install Docker, Docker Compose, dan Git
+
+```bash
+sudo apt update -y
+sudo apt install docker docker-compose git -y
 ```
-#### 3. clone dan masuk ke repository baserow
+
+#### 3. Clone Repository Baserow
+
+```bash
+git clone https://gitlab.com/bramw/baserow.git
+cd baserow
 ```
-$ git clone https://gitlab.com/bramw/baserow.git
-$ cd baserow
+
+#### 4. Setup File `.env`
+
+```bash
+cp .env.example .env
 ```
-#### 4. setup .env untuk baserow ini dari .env.example
+
+Lalu ubah nilai-nilai berikut di dalam `.env`:
+
+```env
+SECRET_KEY=imamkipas
+DATABASE_PASSWORD=kelompoksatukdjk
+REDIS_PASSWORD=kelompoksatukdjk
+BASEROW_PUBLIC_URL=http://my.public.ip
 ```
-$ cp .env.example .env
+
+#### 5. Jalankan Docker Compose
+
+```bash
+docker compose up -d
 ```
-lalu set key pada env, contohnya seperti berikut:
+
+---
+
+## ⚙️ Konfigurasi
+
+### 1. Setup Firewall
+
+```bash
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw allow ssh
+sudo ufw enable
 ```
-SECRET_KEY = imamkipas
-DATABASE_PASSWORD = kelompoksatukdjk
-REDIS_PASSWORD = kelompoksatukdjk
-BASEROW_PUBLIC_URL = http://my.public.ip
-```
-#### 5. Run docker-compose di directory yang sama
-```
-$ docker compose up -d
-```
-# Konfigurasi 
-### 1. Setup firewall
-Eksekusi perintah di bawah pada shell di server:
-```
-$ sudo ufw allow 80/tcp
-$ sudo ufw allow 443/tcp
-$ sudo ufw allow ssh
-$ sudo ufw enable
-```
-### 2. Setup SMTP (agar dapat mengirim email)
-- buka .env di direktori baserow, lalu ubah:
-```
+
+### 2. Setup SMTP (Agar Dapat Mengirim Email)
+
+Buka `.env` di direktori baserow, lalu ubah:
+
+```env
 EMAIL_SMTP=true
 EMAIL_SMTP_HOST=smtp.mailtrap.io
 EMAIL_SMTP_PORT=587
@@ -76,20 +120,30 @@ EMAIL_SMTP_PASSWORD=your_password
 EMAIL_SMTP_USE_TLS=true
 FROM_EMAIL=your_email@example.com
 ```
-# Maintenance 
-### Backup Database Rutin
 
-Klik titik 3 pada tabel yang ingin di backup datanya, lalu pilih "export table".
+---
 
-![Titik 3](cara_pakai/export1.png)
+## 🔧 Maintenance
 
-Pilih format export yang diinginkan, bentuk pemisah kolom, dan jenis encoding. Lalu klik export dan download.
+### Backup Database
 
-![Export](cara_pakai/export2.png)
+Klik titik tiga (⋮) pada tabel yang ingin dibackup, lalu pilih **"Export table"**.
 
-# Otomatisasi 
-#### 1. Buat file bernama ```setup_baserow_auto.sh``` lalu isi dengan script di bawah:
-```
+![Export Table](docs/images/export1.png)
+
+Pilih format export, pemisah kolom, dan encoding. Klik **Export** lalu download.
+
+![Export Options](docs/images/export2.png)
+
+---
+
+## 🤖 Otomatisasi
+
+Script berikut mengotomatiskan seluruh proses instalasi Baserow dari awal.
+
+#### 1. Buat file `setup_baserow_auto.sh`
+
+```bash
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -119,7 +173,6 @@ install_dependencies() {
   log "Memperbarui apt & install docker, docker-compose, git"
   sudo apt update -y
   sudo apt install -y docker docker-compose git
-  # Pastikan user ada di grup docker agar tidak selalu butuh sudo
   sudo usermod -aG docker "$USER"
 }
 
@@ -145,19 +198,16 @@ setup_env() {
     touch .env
   fi
 
-  # Input dari user
   input_var "SECRET_KEY (untuk Baserow backend): " SECRET_KEY 1
   input_var "Database password: " DB_PASSWORD 1
   input_var "Redis password: " REDIS_PASSWORD 1
   input_var "Public URL (contoh: https://domainanda.com): " BASEROW_PUBLIC_URL
 
-  # Validasi
   if [ -z "$SECRET_KEY" ] || [ -z "$DB_PASSWORD" ] || [ -z "$REDIS_PASSWORD" ] || [ -z "$BASEROW_PUBLIC_URL" ]; then
     echo "Error: Semua nilai wajib diisi." >&2
     exit 1
   fi
 
-  # Tulis ke .env (append / replace)
   set_env() {
     local key="$1"
     local val="$2"
@@ -172,7 +222,7 @@ setup_env() {
   set_env "DATABASE_PASSWORD" "$DB_PASSWORD"
   set_env "REDIS_PASSWORD" "$REDIS_PASSWORD"
   set_env "BASEROW_PUBLIC_URL" "$BASEROW_PUBLIC_URL"
-  
+
   log ".env disiapkan"
 }
 
@@ -192,114 +242,132 @@ setup_firewall() {
 
 main() {
   log "Mulai otomatisasi setup Baserow"
-
   install_dependencies
   fetch_repo
   setup_env
   deploy_docker_compose
   setup_firewall
-
   log "Selesai. Akses aplikasi di: $BASEROW_PUBLIC_URL"
 }
 
 main "$@"
 ```
-#### 2. Buat ```setup_baserow_auto.sh``` menjadi executable
+
+#### 2. Jadikan Executable
+
+```bash
+chmod +x setup_baserow_auto.sh
 ```
-$ chmod +x setup_baserow_auto.sh
+
+#### 3. Jalankan Script
+
+```bash
+./setup_baserow_auto.sh
 ```
-#### 3.Run ```setup_baserow_auto.sh``` 
-```
-$ ./setup_baserow_auto.sh
-```
-# Cara Pemakaian
-[`^ kembali ke atas ^`](#)
 
-1. Sebelum menggunakan aplikasi, kita perlu melakukan login terlebih dahulu.
+---
 
-![Login](cara_pakai/login.png)
+## 📖 Cara Pemakaian
 
-2. Setelah login berhasil, akan masuk ke halaman home Baserow. Pada menu sidebar terdapat beberapa pilihan yang dapat dilakukan.
+### 1. Login
 
-![Home](cara_pakai/homepage.png)
+Sebelum menggunakan aplikasi, lakukan login terlebih dahulu.
 
-3. Fungsi utama pada aplikasi ini adalah mengolah database. Klik add new pada sidebar dan pilih database. 
+![Login](docs/images/login.png)
 
-![Database](cara_pakai/addDatabase.png)
+### 2. Halaman Home
 
-4. Pilih untuk membuat database baru atau bisa import database. 
+Setelah login, akan masuk ke halaman home Baserow. Sidebar menampilkan berbagai pilihan navigasi.
 
-![Add Database](cara_pakai/nameDatabase.png)
+![Home](docs/images/homepage.png)
 
-5. Setelah itu akan masuk ke halaman dashboard database. Kita bisa menambah tabel pada database, dan bisa mengatur isi dari tabel tersebut. 
+### 3. Membuat Database Baru
 
-![Name Database](cara_pakai/database.png)
+Klik **Add new** pada sidebar dan pilih **Database**.
 
-![Edit Database](cara_pakai/addColloumn.png)
+![Add Database](docs/images/addDatabase.png)
 
-![Add Colloumn](cara_pakai/add.png)
+Pilih untuk membuat database baru atau import database yang sudah ada.
 
-6. Tampilan lengkap tabel mahasiswa berisi NIM sebagai primary key, Nama, Email, dan Phone number.
+![Name Database](docs/images/nameDatabase.png)
 
-![Tabel mahasiswa](cara_pakai/database_Mahasiswa.png)
+### 4. Mengelola Tabel
 
-7. Untuk mengisi data tabel tekan pada icon persegi putus-putus di sebelah kiri baris.
+Setelah database dibuat, tambahkan tabel dan atur kolom-kolomnya.
 
-![Add Data](cara_pakai/addData.png)
+![Dashboard Database](docs/images/database.png)
 
-8. Isikan data pada tabel.
+![Tambah Kolom](docs/images/addColloumn.png)
 
-![Isi Data](cara_pakai/isiTabel.png)
+![Pengaturan Kolom](docs/images/add.png)
 
-![Data Dummy](cara_pakai/dataDummy.png)
+### 5. Tabel Mahasiswa
 
-9. Hasil akhir tabel dengan data dummy
+Contoh tabel mahasiswa dengan kolom: NIM (primary key), Nama, Email, dan Phone Number.
 
-![Tabel Dummy](cara_pakai/hasilTabel.png)
+![Tabel Mahasiswa](docs/images/database_Mahasiswa.png)
 
-# Pembahasan
-[`^ kembali ke atas ^`](#)
+### 6. Mengisi Data
 
-**Baserow** adalah platform database no-code sumber terbuka (open-source) yang memungkinkan pengguna untuk membuat dan mengelola database tanpa perlu menulis satu baris kode pun. Sebagai salah-satu platform no-code yang sedang naik daun, aplikasi ini menawarkan berbagai kelebihan, diantaranya:
+Klik ikon persegi di sebelah kiri baris untuk membuka form pengisian data.
 
-- Tampilannya mirip seperti spreadsheet (misalnya Excel atau Google Sheets), sehingga sangat mudah dipelajari dan digunakan bahkan oleh pengguna non-teknis sekalipun.
+![Add Data](docs/images/addData.png)
 
-- Pengguna dapat membuat berbagai jenis kolom data, menghubungkan tabel, dan membangun aplikasi sederhana langsung di atas database yang dibuat.
+![Isi Data](docs/images/isiTabel.png)
 
-- Memungkinkan beberapa pengguna untuk bekerja pada database yang sama secara bersamaan, sangat ideal untuk kerja tim.
+![Data Dummy](docs/images/dataDummy.png)
 
-- Open-source, Ini memberikan kebebasan untuk melakukan self-hosting (instalasi di server sendiri) yang memberikan kontrol penuh atas data dan privasi.
+### 7. Hasil Akhir
 
-- Menyediakan API (Application Programming Interface) yang kuat, sehingga mudah dihubungkan dengan aplikasi atau layanan lain untuk otomatisasi alur kerja.
+Tampilan tabel lengkap dengan data dummy.
 
-- Mampu menangani database dengan jumlah baris yang sangat besar tanpa mengalami penurunan performa yang signifikan.
+![Hasil Tabel](docs/images/hasilTabel.png)
 
-Tentu saja, sebuah aplikasi pasti memiliki kekurangan. Kekurangan yang dimiliki Baserow antara lain:
+---
 
-- Meskipun kuat untuk manajemen data dasar hingga menengah, beberapa fitur database relasional yang sangat kompleks mungkin belum tersedia selengkapnya.
+## 💬 Pembahasan
 
-- Dibandingkan dengan kompetitor yang lebih lama, komunitas penggunanya belum sebesar alternatif lain, sehingga sumber daya belajar atau solusi dari komunitas mungkin lebih terbatas.
+**Baserow** adalah platform database no-code open-source yang memungkinkan pengguna membuat dan mengelola database tanpa menulis kode sama sekali.
 
-- Meskipun opsi self-hosting adalah kelebihan, proses instalasi dan pemeliharaannya memerlukan pemahaman teknis tentang server dan database.
+### ✅ Kelebihan Baserow
 
-- Walaupun antarmukanya mudah, untuk memanfaatkan fitur API dan otomatisasi secara maksimal, pengguna tetap memerlukan sedikit pemahaman konsep teknis.
+| Fitur | Keterangan |
+|---|---|
+| Antarmuka Familiar | Mirip spreadsheet (Excel/Google Sheets), mudah dipelajari |
+| Kolom Fleksibel | Berbagai tipe kolom, relasi antar tabel |
+| Kolaborasi Real-time | Beberapa pengguna dapat bekerja bersamaan |
+| Open-source & Self-hosted | Kontrol penuh atas data dan privasi |
+| REST API | Mudah diintegrasikan dengan aplikasi lain |
+| Skalabilitas | Mampu menangani database berjumlah baris sangat besar |
 
-Jika dibandingkan dengan aplikasi sejenisnya seperti **Limbas**, **Baserow** memiliki beberapa keunggulan dan kelemahan. Berikut adalah beberapa perbandingan antara kedua aplikasi ini:
+### ❌ Kekurangan Baserow
 
-- **Baserow** lebih ditujukan untuk pengguna bisnis dan individu yang memerlukan database online yang fleksibel dan mudah digunakan, mirip seperti Airtable. Sedangkan **Limbas** lebih berfokus pada solusi enterprise untuk manajemen proses bisnis (Business Process Management), manajemen dokumen, dan pengembangan aplikasi low-code yang lebih terstruktur dan kompleks.
+- Fitur database relasional yang sangat kompleks belum sepenuhnya tersedia
+- Komunitas pengguna belum sebesar alternatif yang lebih lama
+- Self-hosting memerlukan pemahaman teknis tentang server dan database
+- Penggunaan fitur API dan otomatisasi tetap memerlukan sedikit pengetahuan teknis
 
-- **Baserow** unggul dalam kemudahan penggunaan dengan antarmuka spreadsheet-nya yang familier. **Limbas**, dengan fokus pada proses bisnis, memiliki antarmuka yang lebih kompleks dan memerlukan waktu belajar yang lebih lama.
+### 🔄 Perbandingan dengan Limbas
 
-- **Baserow** menawarkan kebebasan dan fleksibilitas dalam menstrukturkan data sesuai keinginan pengguna. Sebaliknya, **Limbas** menyediakan kerangka kerja dan modul yang lebih terstruktur untuk membangun solusi bisnis yang spesifik, seperti sistem CRM atau manajemen proyek.
+| Aspek | Baserow | Limbas |
+|---|---|---|
+| Target Pengguna | Bisnis & individu (umum) | Enterprise (manajemen proses bisnis) |
+| Kemudahan Penggunaan | ⭐⭐⭐⭐⭐ Sangat mudah | ⭐⭐⭐ Memerlukan waktu belajar |
+| Fleksibilitas Data | Bebas sesuai kebutuhan | Terstruktur untuk solusi bisnis spesifik |
+| Basis Teknologi | Open-source, modern | Open-source, berbasis PHP |
+| Komunitas | Berkembang pesat | Lebih terfokus pada layanan komersial |
 
-- Keduanya merupakan open-source dan berbasis PHP. Namun, fokus **Baserow** pada pengalaman pengguna membuatnya terasa lebih modern dan ringan untuk tugas manajemen data. **Limbas** dirancang untuk alur kerja perusahaan yang lebih rumit dan terintegrasi.
+---
 
-- Sebagai solusi enterprise, dukungan untuk **Limbas** mungkin lebih terfokus pada layanan komersial dan dokumentasi resmi. Baserow, dengan sifatnya yang lebih umum, memiliki potensi untuk membangun komunitas pengguna yang lebih luas dan beragam di masa depan.
+## 📚 Referensi
 
-# Referensi
-[`^ kembali ke atas ^`](#)
+1. [Baserow Official Website](https://baserow.io/)
+2. [Baserow — GitHub](https://github.com/bram2w/baserow)
+3. [Limbas Official Website](https://www.limbas.com/en/)
+4. [Limbas — GitHub](https://github.com/limbas/limbas)
 
-1. [Baserow](https://baserow.io/)
-2. [Github Baserow](https://github.com/bram2w/baserow)
-3. [Limbas](https://www.limbas.com/en/)
-4. [Github Limbas](https://github.com/limbas/limbas)
+---
+
+<div align="center">
+  <sub>Dibuat sebagai tugas mata kuliah · Kelompok Satu KDJK</sub>
+</div>
